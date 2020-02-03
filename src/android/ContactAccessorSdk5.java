@@ -30,7 +30,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -42,6 +41,10 @@ import org.apache.cordova.LOG;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -201,7 +204,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                 ContactsContract.Data.CONTACT_ID + " ASC");
 
         // Create a set of unique ids
-        Set<String> contactIds = new TreeSet<String>();
+        Set<String> contactIds = new HashSet<String>();
         int idColumn = -1;
         while (idCursor.moveToNext()) {
             if (idColumn < 0) {
@@ -340,6 +343,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         }
     }
 
+
     /**
      * Creates an array of contacts from the cursor you pass in
      *
@@ -357,7 +361,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         boolean newContact = true;
         String mimetype = "";
 
-        JSONArray contacts = new JSONArray();
+        List<JSONObject> jsonsContacts = new ArrayList<JSONObject>();
         JSONObject contact = new JSONObject();
         JSONArray organizations = new JSONArray();
         JSONArray addresses = new JSONArray();
@@ -377,7 +381,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
         int colEventType = c.getColumnIndex(CommonDataKinds.Event.TYPE);
 
         if (c.getCount() > 0) {
-            while (c.moveToNext() && (contacts.length() <= (limit - 1))) {
+            while (c.moveToNext() && (jsonsContacts.size() <= (limit - 1))) {
                 try {
                     contactId = c.getString(colContactId);
                     rawId = c.getString(colRawContactId);
@@ -392,7 +396,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                     if (!oldContactId.equals(contactId)) {
                         // Populate the Contact object with it's arrays
                         // and push the contact into the contacts array
-                        contacts.put(populateContact(contact, organizations, addresses, phones,
+                        jsonsContacts.add(populateContact(contact, organizations, addresses, phones,
                                 emails, ims, websites, photos));
 
                         // Clean up the objects
@@ -487,10 +491,21 @@ public class ContactAccessorSdk5 extends ContactAccessor {
             }
 
             // Push the last contact into the contacts array
-            if (contacts.length() < limit) {
-                contacts.put(populateContact(contact, organizations, addresses, phones,
+            if (jsonsContacts.length() < limit) {
+                jsonsContacts.put(populateContact(contact, organizations, addresses, phones,
                         emails, ims, websites, photos));
             }
+
+            Collections.sort(jsonsContacts, new Comparator<JSONObject>() {
+                @Override
+                public int compare(JSONObject lhs, JSONObject rhs) {
+                    String lid = lhs.getString("displayName");
+                    String rid = rhs.getString("displayName");
+                    return rid.compareTo(lid);
+                }
+            });
+
+            JSONArray contacts = new JSONArray(jsonsContacts);
         }
         c.close();
         return contacts;
