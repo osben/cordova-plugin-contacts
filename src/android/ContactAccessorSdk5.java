@@ -491,8 +491,8 @@ public class ContactAccessorSdk5 extends ContactAccessor {
             }
 
             // Push the last contact into the contacts array
-            if (jsonsContacts.length() < limit) {
-                jsonsContacts.put(populateContact(contact, organizations, addresses, phones,
+            if (jsonsContacts.size() < limit) {
+                jsonsContacts.add(populateContact(contact, organizations, addresses, phones,
                         emails, ims, websites, photos));
             }
 
