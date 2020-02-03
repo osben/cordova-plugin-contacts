@@ -30,6 +30,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -200,7 +201,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                 ContactsContract.Data.CONTACT_ID + " ASC");
 
         // Create a set of unique ids
-        Set<String> contactIds = new HashSet<String>();
+        Set<String> contactIds = new TreeSet<String>();
         int idColumn = -1;
         while (idCursor.moveToNext()) {
             if (idColumn < 0) {
