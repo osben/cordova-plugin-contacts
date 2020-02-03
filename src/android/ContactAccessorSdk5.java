@@ -504,10 +504,10 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                     return rid.compareTo(lid);
                 }
             });
-
-            JSONArray contacts = new JSONArray(jsonsContacts);
         }
         c.close();
+
+        JSONArray contacts = new JSONArray(jsonsContacts);
         return contacts;
     }
 
