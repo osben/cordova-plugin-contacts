@@ -499,8 +499,18 @@ public class ContactAccessorSdk5 extends ContactAccessor {
             Collections.sort(jsonsContacts, new Comparator<JSONObject>() {
                 @Override
                 public int compare(JSONObject lhs, JSONObject rhs) {
-                    String lid = lhs.getString("displayName");
-                    String rid = rhs.getString("displayName");
+                    String lid = null;
+                    try {
+                        lid = lhs.getString("displayName");
+                    } catch (JSONException e) {
+                        LOG.e(LOG_TAG, e.getMessage(), e);
+                    }
+                    String rid = null;
+                    try {
+                        rid = rhs.getString("displayName");
+                    } catch (JSONException e) {
+                        LOG.e(LOG_TAG, e.getMessage(), e);
+                    }
                     return rid.compareTo(lid);
                 }
             });
