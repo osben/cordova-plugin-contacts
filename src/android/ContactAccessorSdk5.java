@@ -511,7 +511,7 @@ public class ContactAccessorSdk5 extends ContactAccessor {
                     } catch (JSONException e) {
                         LOG.e(LOG_TAG, e.getMessage(), e);
                     }
-                    return rid.compareTo(lid);
+                    return lid.compareTo(rid);
                 }
             });
         }
