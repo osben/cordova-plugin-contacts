@@ -397,7 +397,7 @@
                 }
             }
             
-            [returnContacts sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"formatted" ascending:YES]]];
+            [returnContacts sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"formatted" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"displayName" ascending:YES]]];
             
             // return found contacts (array is empty if no contacts found)
             CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:returnContacts];
